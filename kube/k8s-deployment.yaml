@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jvm-pod
+  labels:
+    app: jvm
+spec:
+  selector:
+    matchLabels:
+      app: jvm
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: jvm
+    spec:
+      containers:
+      - image: "venerayan/jvm:latest"
+        name: jvm-image
+        env:
+          - name: JAVA_OPTS
+            valueFrom:
+              secretKeyRef:
+                name: mysecret
+                key: JAVA_OPTS   
+          - name: JAVA_OPTS2 
+            valueFrom:
+              configMapKeyRef:
+                name: configmap
+                key: JAVA_OPTS2                 
+        resources: {}
+status: {}

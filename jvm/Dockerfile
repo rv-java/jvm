@@ -14,7 +14,7 @@ COPY build/libs/jvm-0.0.1-SNAPSHOT.war /app/app.jar
 
 RUN echo '#!/bin/sh' > /entrypoint.sh \
 	&& echo 'set -x' >> /entrypoint.sh \
-	&& echo 'sh -c "cd /app; exec java $BASE_JAVA_OPTS -DpublishAuthPwd=$JAVA_OPTS -jar app.jar --server.servlet.context-path=/$ENV_CONTEXT"'  >> /entrypoint.sh \
+	&& echo 'sh -c "cd /app; exec java $BASE_JAVA_OPTS -DpublishAuthPwd=$JAVA_OPTS -Dresmgr=$JAVA_OPTS2 -jar app.jar --server.servlet.context-path=/$ENV_CONTEXT"'  >> /entrypoint.sh \
 	&& chmod a+x /entrypoint.sh
 	 
 ENTRYPOINT /entrypoint.sh
