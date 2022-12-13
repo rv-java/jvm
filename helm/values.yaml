@@ -55,7 +55,7 @@ secret:
   envname: JAVA_OPTS
   name: mysecret
   key: JAVA_OPTS
-  value: YWJyYWNhYmFkcmEK
+  value: mysecret
 
 ingress:
   enabled: false
