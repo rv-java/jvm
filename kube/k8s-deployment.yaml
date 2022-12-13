@@ -20,12 +20,12 @@ spec:
       - image: "venerayan/jvm:latest"
         name: jvm-image
         env:
-          - name: JAVA_OPTS
+          - name: mysecret
             valueFrom:
               secretKeyRef:
                 name: mysecret
                 key: JAVA_OPTS   
-          - name: JAVA_OPTS2 
+          - name: configmap 
             valueFrom:
               configMapKeyRef:
                 name: configmap

@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository: "venerayan/jvm:latest"
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -16,7 +16,7 @@ fullnameOverride: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: true
+  create: false
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
@@ -37,8 +37,25 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
-  port: 80
+  type: LoadBalancer
+  port: 8080
+  name: service-port
+  targetport: 8080
+  
+
+configmap:
+  enabled: true
+  envname: JAVA_OPTS2
+  name: configmap
+  key: JAVA_OPTS2
+  value: tmpuser
+
+secret:
+  enabled: true
+  envname: JAVA_OPTS
+  name: mysecret
+  key: JAVA_OPTS
+  value: YWJyYWNhYmFkcmEK
 
 ingress:
   enabled: false
