@@ -25,6 +25,8 @@ metadata:
     helm.sh/chart: jvm-0.1.0
     app.kubernetes.io/name: jvm
     app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
 spec:
   type: LoadBalancer
   ports:
@@ -45,6 +47,8 @@ metadata:
     helm.sh/chart: jvm-0.1.0
     app.kubernetes.io/name: jvm
     app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
   selector:
@@ -57,22 +61,48 @@ spec:
         app.kubernetes.io/name: jvm
         app.kubernetes.io/instance: release-name
     spec:
+      serviceAccountName: default
+      securityContext:
+        {}
       containers:
-        - name: jvm-image
-          image: "venerayan/jvm:latest"
-          imagePullPolicy: IfNotPresent
+        - name: jvm
           ports:
           - containerPort: 8080
+          securityContext:
+            {}
+          image: "venerayan/jvm:latest"
+          imagePullPolicy: IfNotPresent
           env:
-            - name: JAVA_OPTS
-              valueFrom:
-                secretKeyRef:
-                  name: mysecret
-                  key: JAVA_OPTS
-            - name: JAVA_OPTS2
-              valueFrom:
-                configMapKeyRef:
-                  name: configmap
-                  key: JAVA_OPTS2
+          - name: JAVA_OPTS
+            valueFrom:
+              secretKeyRef:
+                name: mysecret
+                key: JAVA_OPTS
+          - name: JAVA_OPTS2
+            valueFrom:
+              configMapKeyRef:
+                name: configmap
+                key: JAVA_OPTS2
           resources:
             {}
+---
+# Source: jvm/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "release-name-jvm-test-connection"
+  labels:
+    helm.sh/chart: jvm-0.1.0
+    app.kubernetes.io/name: jvm
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['release-name-jvm:8080']
+  restartPolicy: Never
